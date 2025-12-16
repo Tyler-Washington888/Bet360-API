@@ -8,7 +8,7 @@ export enum UserRole {
 }
 
 // ====== MONGOOSE DOCUMENT INTERFACE ======
-export interface IUserDocument extends Document {
+export interface IUserDocument extends Omit<Document, "_id"> {
   _id: string;
   firstname: string;
   lastname: string;
