@@ -34,8 +34,8 @@ const userSchema = new Schema<IUserDocument>(
     password: {
       type: String,
       required: [true, "Please add a password"],
-      minlength: [4, "Password must be at least 4 characters"],
-      maxlength: [40, "Password cannot exceed 40 characters"],
+      
+      
       validate: {
         validator: function (value: string): boolean {
           return !/\s/.test(value);
@@ -49,7 +49,7 @@ const userSchema = new Schema<IUserDocument>(
       validate: [
         {
           validator: function (value: string): boolean {
-            // Validate MM-DD-YYYY format
+            
             const dateRegex =
               /^(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])-(19|20)\d{2}$/;
             return dateRegex.test(value);
@@ -59,27 +59,27 @@ const userSchema = new Schema<IUserDocument>(
         },
         {
           validator: function (value: string): boolean {
-            // Validate month (1-12) and day ranges for each month
+            
             const [month, day, year] = value.split("-").map(Number);
 
-            // Check month range
+            
             if (month < 1 || month > 12) {
               return false;
             }
 
-            // Days in each month (non-leap year)
+            
             const daysInMonth = [
               31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
             ];
 
-            // Check for leap year and adjust February
+            
             const isLeapYear =
               (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
             if (isLeapYear && month === 2) {
               daysInMonth[1] = 29;
             }
 
-            // Check day range for the specific month
+            
             if (day < 1 || day > daysInMonth[month - 1]) {
               return false;
             }
@@ -121,7 +121,7 @@ const userSchema = new Schema<IUserDocument>(
   }
 );
 
-// Hash password before saving
+
 userSchema.pre<IUserDocument>("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -136,14 +136,14 @@ userSchema.pre<IUserDocument>("save", async function (next) {
   }
 });
 
-// Match user entered password to hashed password in database
+
 userSchema.methods.matchPassword = async function (
   enteredPassword: string
 ): Promise<boolean> {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-// Create and export the model
+
 const User: Model<IUserDocument> = mongoose.model<IUserDocument>(
   "User",
   userSchema

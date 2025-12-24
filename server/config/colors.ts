@@ -1,6 +1,6 @@
 import * as colors from "colors";
 
-// Enable colors theme
+
 colors.setTheme({
   silly: "rainbow",
   input: "grey",
@@ -15,4 +15,7 @@ colors.setTheme({
 });
 
 export default colors;
+
+
+
 

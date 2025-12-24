@@ -13,9 +13,9 @@ import {
 } from "../interfaces/user";
 import { JWTPayload } from "../interfaces/jwt";
 
-// @desc    Register user
-// @route   POST /api/users/signup
-// @access  Public
+
+
+
 const signUp = asyncHandler(
   async (req: Request, res: Response<SignUpResponse>) => {
     const {
@@ -37,15 +37,18 @@ const signUp = asyncHandler(
       throw new Error("Password is required");
     }
 
+    
+    if (password.length > 40) {
+      res.status(400);
+      throw new Error("Password cannot exceed 40 characters");
+    }
+
     if (!firstname) {
       res.status(400);
       throw new Error("First name is required");
     }
 
-    if (!lastname) {
-      res.status(400);
-      throw new Error("Last name is required");
-    }
+    
 
     if (!dateOfBirth) {
       res.status(400);
@@ -89,9 +92,9 @@ const signUp = asyncHandler(
   }
 );
 
-// @desc    Authenticate user
-// @route   POST /api/users/login
-// @access  Public
+
+
+
 const login = asyncHandler(
   async (req: Request, res: Response<LoginResponse>) => {
     const { email, password }: LoginRequest = req.body;
@@ -129,9 +132,9 @@ const login = asyncHandler(
   }
 );
 
-// @desc    Get user profile data
-// @route   GET /api/users/profile
-// @access  Private
+
+
+
 const getProfile = asyncHandler(
   async (req: Request, res: Response<ProfileResponse>) => {
     const typedReq = req as AuthenticatedRequest;
@@ -162,7 +165,7 @@ const getProfile = asyncHandler(
   }
 );
 
-// Generate JWT
+
 const generateJsonWebToken = (id: string): string => {
   const secret = process.env.JWT_SECRET;
 
@@ -178,3 +181,4 @@ const generateJsonWebToken = (id: string): string => {
 };
 
 export { signUp, login, getProfile };
+

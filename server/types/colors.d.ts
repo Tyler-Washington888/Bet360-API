@@ -44,7 +44,7 @@ declare module "colors" {
   export = colors;
 }
 
-// Extend String interface for template literal usage
+
 declare global {
   interface String {
     cyan: string;

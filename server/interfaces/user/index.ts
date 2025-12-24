@@ -1,13 +1,13 @@
 import { Document } from "mongoose";
 import { Request } from "express";
 
-// ====== ENUMS ======
+
 export enum UserRole {
   USER = "user",
   ADMIN = "admin",
 }
 
-// ====== MONGOOSE DOCUMENT INTERFACE ======
+
 export interface IUserDocument extends Omit<Document, "_id"> {
   _id: string;
   firstname: string;
@@ -21,7 +21,7 @@ export interface IUserDocument extends Omit<Document, "_id"> {
   matchPassword(enteredPassword: string): Promise<boolean>;
 }
 
-// ====== REQUEST INTERFACES ======
+
 export interface SignUpRequest {
   firstname: string;
   lastname: string;
@@ -40,7 +40,7 @@ export interface AuthenticatedRequest extends Request {
   user: IUserDocument;
 }
 
-// ====== RESPONSE INTERFACES ======
+
 export interface SignUpResponse {
   _id: string;
   firstname: string;
