@@ -8,8 +8,8 @@ import {
 } from "../interfaces/oauth";
 import { AuthenticatedRequest } from "../interfaces/user";
 
-const BETWIZ_API_URL = process.env.BETWIZ_API_URL || "http:
-const WINNINGEDGE_API_URL = process.env.WINNINGEDGE_API_URL || "http:
+const BETWIZ_API_URL = process.env.BETWIZ_API_URL || "http://localhost:5001";
+const WINNINGEDGE_API_URL = process.env.WINNINGEDGE_API_URL || "http://localhost:5002";
 const BET360_CLIENT_ID = process.env.BET360_CLIENT_ID || "bet360_client_id";
 const BET360_CLIENT_SECRET = process.env.BET360_CLIENT_SECRET || "bet360_client_secret";
 
@@ -33,7 +33,7 @@ const exchangeToken = asyncHandler(
 
     
     const apiUrl = sportsbook === "betwiz" ? BETWIZ_API_URL : WINNINGEDGE_API_URL;
-    const redirectUri = `${process.env.BET360_UI_URL || "http:
+    const redirectUri = `${process.env.BET360_UI_URL || "http://localhost:5173"}/oauth/callback`;
 
     
     try {

@@ -56,7 +56,7 @@ const connectToDatabase = async (retryCount = 0, silent = false): Promise<boolea
         console.log(`   ${errorMessage}`.red);
         console.log("\n💡 Possible solutions:".yellow);
         console.log("   1. Check if your IP address is whitelisted in MongoDB Atlas");
-        console.log("   2. Go to: https:
+        console.log("   2. Go to: https://cloud.mongodb.com/security/network/whitelist");
         console.log("   3. Or use 0.0.0.0/0 to allow all IPs (less secure, for development only)");
         console.log("   4. Verify your MONGO_URI in .env file is correct");
         console.log("\n🔄 Server will continue retrying in the background...\n".yellow);
