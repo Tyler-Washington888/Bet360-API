@@ -8,6 +8,7 @@ import { errorHandler } from "./middleware/errorMiddleware";
 import userRoutes from "./routes/userRoutes";
 import subscriptionRoutes from "./routes/subscriptionRoutes";
 import oauthRoutes from "./routes/oauthRoutes";
+import groupRoutes from "./routes/groupRoutes";
 import { tokenRefreshService } from "./services/tokenRefreshService";
 
 const PORT: number = parseInt(process.env.PORT || "5000", 10);
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/api/users", userRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/oauth", oauthRoutes);
+app.use("/api/groups", groupRoutes);
 
 app.use(errorHandler);
 

@@ -21,6 +21,7 @@ const signUp = asyncHandler(
     const {
       firstname,
       lastname,
+      username,
       email,
       password,
       dateOfBirth,
@@ -48,23 +49,36 @@ const signUp = asyncHandler(
       throw new Error("First name is required");
     }
 
-    
+    if (!username) {
+      res.status(400);
+      throw new Error("Username is required");
+    }
+
+    if (username.length > 15) {
+      res.status(400);
+      throw new Error("Username cannot exceed 15 characters");
+    }
 
     if (!dateOfBirth) {
       res.status(400);
       throw new Error("Date of birth is required");
     }
 
-    const userExists = await User.findOne({ email });
-
-    if (userExists) {
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
       res.status(400);
-      throw new Error("User already exists");
+      throw new Error("Email already registered");
     }
 
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) {
+      res.status(400);
+      throw new Error("Username already taken");
+    }
     const user: IUserDocument = await User.create({
       firstname,
       lastname,
+      username,
       email,
       password,
       dateOfBirth,
@@ -78,6 +92,7 @@ const signUp = asyncHandler(
         _id: userIdToString,
         firstname: user.firstname,
         lastname: user.lastname,
+        username: user.username,
         email: user.email,
         dateOfBirth: user.dateOfBirth,
         role: user.role,
@@ -118,6 +133,7 @@ const login = asyncHandler(
         _id: userIdToString,
         firstname: user.firstname,
         lastname: user.lastname,
+        username: user.username,
         email: user.email,
         dateOfBirth: user.dateOfBirth,
         role: user.role,
@@ -154,6 +170,7 @@ const getProfile = asyncHandler(
       _id: userIdToString,
       firstname: user.firstname,
       lastname: user.lastname,
+      username: user.username,
       email: user.email,
       dateOfBirth: user.dateOfBirth,
       role: user.role,

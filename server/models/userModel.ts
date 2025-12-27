@@ -17,6 +17,14 @@ const userSchema = new Schema<IUserDocument>(
       maxlength: [255, "Last name cannot exceed 255 characters"],
       trim: true,
     },
+    username: {
+      type: String,
+      required: [true, "Please add a username"],
+      unique: true,
+      trim: true,
+      minlength: [1, "Username must be at least 1 character"],
+      maxlength: [15, "Username cannot exceed 15 characters"],
+    },
     email: {
       type: String,
       required: [true, "Please add an email"],

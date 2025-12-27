@@ -12,6 +12,7 @@ export interface IUserDocument extends Omit<Document, "_id"> {
   _id: string;
   firstname: string;
   lastname: string;
+  username: string;
   email: string;
   password: string;
   dateOfBirth: string;
@@ -25,6 +26,7 @@ export interface IUserDocument extends Omit<Document, "_id"> {
 export interface SignUpRequest {
   firstname: string;
   lastname: string;
+  username: string;
   email: string;
   password: string;
   dateOfBirth: string;
@@ -45,6 +47,7 @@ export interface SignUpResponse {
   _id: string;
   firstname: string;
   lastname: string;
+  username: string;
   email: string;
   dateOfBirth: string;
   token: string;
@@ -55,6 +58,7 @@ export interface LoginResponse {
   _id: string;
   firstname: string;
   lastname: string;
+  username: string;
   email: string;
   dateOfBirth: string;
   token: string;
@@ -65,6 +69,7 @@ export interface ProfileResponse {
   _id: string;
   firstname: string;
   lastname: string;
+  username: string;
   email: string;
   dateOfBirth: string;
   role: UserRole;

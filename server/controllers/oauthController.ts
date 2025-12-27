@@ -54,8 +54,9 @@ const exchangeToken = asyncHandler(
 
       if (!tokenResponse.ok) {
         const errorData = (await tokenResponse.json()) as { error?: string; error_description?: string };
-        res.status(tokenResponse.status);
-        throw new Error(errorData.error || "Failed to exchange authorization code");
+        const tokenError = new Error(errorData.error || "Failed to exchange authorization code") as any;
+        tokenError.status = tokenResponse.status;
+        throw tokenError;
       }
 
       interface SportsbookTokenResponse {
@@ -71,6 +72,48 @@ const exchangeToken = asyncHandler(
       
       const accessTokenExpiresAt = new Date(Date.now() + tokenData.expires_in * 1000);
       const refreshTokenExpiresAt = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000); 
+
+      
+      if (tokenData.user_id) {
+        try {
+          const subscribeResponse = await fetch(`${apiUrl}/api/users/${tokenData.user_id}/subscribe`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${tokenData.access_token}`, 
+            },
+            body: JSON.stringify({
+              bet360Email: typedReq.user.email,
+            }),
+          });
+
+          if (!subscribeResponse.ok) {
+            const errorText = await subscribeResponse.text();
+            let errorMessage = "Failed to subscribe to sportsbook";
+            try {
+              const errorJson = JSON.parse(errorText);
+              errorMessage = errorJson.error || errorJson.message || errorMessage;
+            } catch {
+              if (errorText && errorText.trim()) {
+                errorMessage = errorText;
+              }
+            }
+            
+            const subscribeError = new Error(errorMessage) as any;
+            subscribeError.status = subscribeResponse.status;
+            throw subscribeError;
+          }
+        } catch (subscribeError: any) {
+          if (subscribeError.status) {
+            const errorWithStatus = new Error(subscribeError.message) as any;
+            errorWithStatus.status = subscribeError.status;
+            throw errorWithStatus;
+          }
+          const networkError = new Error(`Failed to connect to ${sportsbook} API: ${subscribeError.message}`) as any;
+          networkError.status = 500;
+          throw networkError;
+        }
+      }
 
       
       const existingToken = await OAuthToken.findOne({
@@ -105,30 +148,6 @@ const exchangeToken = asyncHandler(
         await newToken.save();
       }
 
-      
-      if (tokenData.user_id) {
-        try {
-          
-          const subscribeResponse = await fetch(`${apiUrl}/api/users/${tokenData.user_id}/subscribe`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${tokenData.access_token}`, 
-            },
-            body: JSON.stringify({
-              bet360Email: typedReq.user.email,
-            }),
-          });
-
-          if (!subscribeResponse.ok) {
-            await subscribeResponse.text();
-            
-          }
-        } catch (subscribeError) {
-          
-        }
-      }
-
       const response: TokenExchangeResponse = {
         success: true,
         message: "Successfully connected to sportsbook",
@@ -137,8 +156,14 @@ const exchangeToken = asyncHandler(
 
       res.status(200).json(response);
     } catch (error: any) {
-      res.status(500);
-      throw new Error(error.message || "Failed to exchange authorization code");
+      if (error.status) {
+        const statusError = new Error(error.message) as any;
+        statusError.status = error.status;
+        throw statusError;
+      }
+      const serverError = new Error(error.message || "Failed to exchange authorization code") as any;
+      serverError.status = 500;
+      throw serverError;
     }
   }
 );
